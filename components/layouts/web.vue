@@ -1,0 +1,24 @@
+<template>
+    <div class="grid grid-cols-12 relative ml-5 mr-5 mb-10">
+        <div class="col-start-1 col-span-12 lg:col-start-1 lg:col-span-12 w-full lg:w-full overflow-auto">
+            <ContentRenderer v-if="page" :value="page" :style="{ fontSize: main.font.size }"
+                class="par pb-10 pl-4 pr-4 sm:pl-8 sm:pr-8 2xl:pl-36 2xl:pr-36">
+            </ContentRenderer>
+            <!-- <NavPrevNextPage v-if="route.path !== '/'" /> -->
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { useQueryCollection } from '~/composables/nuxt/nav/useQueryCollection'
+import { useThrow404 } from '~/composables/nuxt/error/useThrow404'
+
+const route = useRoute()
+const { data: page } = await useAsyncData(route.path, () => {
+    return useQueryCollection('content').path(route.path).first()
+})
+
+useThrow404(page)
+
+const main = useAppConfig().main
+</script>

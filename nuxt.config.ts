@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/mdc',
   ],
   
-  ssr: true,
+  ssr: false,
 
   colorMode: {
     preference: 'dark'

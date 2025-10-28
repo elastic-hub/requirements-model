@@ -10,8 +10,6 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxtjs/mdc',
   ],
-  
-  ssr: false,
 
   colorMode: {
     preference: 'dark'

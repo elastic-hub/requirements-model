@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/mdc',
   ],
   
-  ssr: true,
+  ssr: false,
 
   colorMode: {
     preference: 'dark'
@@ -37,10 +37,6 @@ export default defineNuxtConfig({
       "DM Mono": [400, 500],
     },
   },
-
-  app: {
-    baseURL: process.env.NUXT_APP_BASE_URL || "/"
-  },
   
   nitro: {
     devProxy: {
@@ -49,6 +45,9 @@ export default defineNuxtConfig({
         changeOrigin: true,
       },
     },
-    preset: "github_pages"
+    prerender: {
+      crawlLinks: true,
+      failOnError: false,
+    },
   },
 })

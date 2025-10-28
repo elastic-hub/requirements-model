@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     public: {
       githubToken: process.env.GITHUB_TOKEN,
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+      supabaseAnonKey: process.env.SUPABASE_KEY,
     }
   },
 

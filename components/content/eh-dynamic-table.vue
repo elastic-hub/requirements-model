@@ -194,6 +194,7 @@ const { $filterTopic, $filterCR12, $model_rules_v1_2 } = useNuxtApp();
 const { setMridData, setLoading } = useMridData()
 
 const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
 
 const PER_PAGE_LIST = config.perPage
 //const recordingIcon = config.icons.recording
@@ -616,6 +617,7 @@ const runAnalysis = async () => {
 
 const getItemColumValue = (item: (any), column: (any)) => {
   let result = ""
+  const baseUrl = runtimeConfig.app.baseURL || '';
 
   const icons = Object.values(config.icons).map(icon => icon.svg)
   const titles = Object.values(config.icons).map(icon => icon.tooltip)
@@ -647,11 +649,11 @@ const getItemColumValue = (item: (any), column: (any)) => {
           // if (!hasAccess) return ''
 
           if (suffix === 'meetingID') {
-            return `<a href="/analysis?meeting_id=${item.meetingID}" target="_blank" title="Analyse ${item.meetingID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
+            return `<a href="${baseUrl}/analysis?meeting_id=${item.meetingID}" target="_blank" title="Analyse ${item.meetingID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
           } else if (suffix === 'topicID') {
-            return `<a href="/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
+            return `<a href="${baseUrl}/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
           } else if (suffix === 'combinedID') {
-            return `<button onclick="sessionStorage.setItem('meetingRegister', '${props.dataUrl}'); window.open('/analysis?combined_id=${item.combinedID}', '_blank');" title="Analyse ${item.combinedID}" class="cursor-pointer mr-2 hover:text-blue-100">${iconConfig.svg}</button>`
+            return `<button onclick="sessionStorage.setItem('meetingRegister', '${props.dataUrl}'); window.open('${baseUrl}/analysis?combined_id=${item.combinedID}', '_blank');" title="Analyse ${item.combinedID}" class="cursor-pointer mr-2 hover:text-blue-100">${iconConfig.svg}</button>`
 
           } else {
             // Default ai behavior if no suffix
@@ -703,7 +705,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
   const yamlButton = `<button onclick="window.openYamlModal('${item.id}')" title="See ${item.id} in YAML format" class="cursor-pointer mr-2">${icons[6]}</button>`;
   const mermaidDiagram = `<button onclick="window.openMermaidModal('${item.id}')" title="Show ${item.id} Mermaid diagram" class="cursor-pointer mr-2">${icons[8]}</button>`;
   const safeDataUrl = (typeof props.dataUrl === 'string') ? props.dataUrl.replace(/'/g, "\\'") : '';
-  const MRIDReader = `<button onclick="sessionStorage.setItem('mridDataUrl', '${safeDataUrl}'); window.open('/mrid?mrid_id=${item.id}', '_blank');" title="View ${item.id}" class="cursor-pointer mr-2 hover:text-blue-100">${icons[7]}</button>`;
+  const MRIDReader = `<button onclick="sessionStorage.setItem('mridDataUrl', '${safeDataUrl}'); window.open('${baseUrl}/mrid?mrid_id=${item.id}', '_blank');" title="View ${item.id}" class="cursor-pointer mr-2 hover:text-blue-100">${icons[7]}</button>`;
 
   return yamlButton + mermaidDiagram + MRIDReader;
   } else if (Array.isArray(column.typeData) && column.typeData.includes('idURL') && column.name === 'idURL') {
@@ -711,7 +713,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
     const link = item.link
     const title = item.id
 
-    const ai = `<a href="/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}">${icons[1]}</a>`
+    const ai = `<a href="${baseUrl}/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}">${icons[1]}</a>`
 
     const googleDrive = link
       ? [`<a href="${link}" target="_blank" class="mr-6" title="${title}">${icons[3]}</a>`, ai]

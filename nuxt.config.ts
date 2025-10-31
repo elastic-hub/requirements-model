@@ -50,7 +50,7 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      routes: ['/footer-content', '/mrid'],
+      routes: ['/requirements-model/footer-content', '/requirements-model/mrid'],
       crawlLinks: true,
       failOnError: false,
     },

@@ -703,7 +703,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
   const yamlButton = `<button onclick="window.openYamlModal('${item.id}')" title="See ${item.id} in YAML format" class="cursor-pointer mr-2">${icons[6]}</button>`;
   const mermaidDiagram = `<button onclick="window.openMermaidModal('${item.id}')" title="Show ${item.id} Mermaid diagram" class="cursor-pointer mr-2">${icons[8]}</button>`;
   const safeDataUrl = (typeof props.dataUrl === 'string') ? props.dataUrl.replace(/'/g, "\\'") : '';
-  const MRIDReader = `<button onclick="sessionStorage.setItem('mridDataUrl', '${safeDataUrl}'); window.open('/mrid?mrid_id=${item.id}', '_blank');" title="View ${item.id}" class="cursor-pointer mr-2 hover:text-blue-100">${icons[7]}</button>`;
+    const MRIDReader = `<button onclick="sessionStorage.setItem('mridDataUrl', '${safeDataUrl}'); window.open('requirements-model/mrid?mrid_id=${item.id}', '_blank');" title="View ${item.id}" class="cursor-pointer mr-2 hover:text-blue-100">${icons[7]}</button>`;
 
   return yamlButton + mermaidDiagram + MRIDReader;
   } else if (Array.isArray(column.typeData) && column.typeData.includes('idURL') && column.name === 'idURL') {

@@ -12,8 +12,8 @@ export default defineContentConfig({
       },
     }),
     localContent: defineCollection({
-      source: '**',
-      type: 'page'
+      source: 'content/**/*.md',
+      type: 'page',
     }),
     prompts: defineCollection({
       type: 'data',

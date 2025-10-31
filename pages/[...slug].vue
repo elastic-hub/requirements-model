@@ -21,7 +21,7 @@ const pageID = localContent.value?.id
 let page: any
 if (pageID?.startsWith('localContent')) {
     const { data } = await useAsyncData(`${route.path}`, () => {
-        return useQueryCollection('localContent/requirements-model').path(route.path).first()
+        return useQueryCollection('localContent').path(route.path).first()
     })
     page = data
 } else {

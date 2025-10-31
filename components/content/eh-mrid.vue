@@ -1,78 +1,81 @@
 <template>
-    <div :class="ui.wrapper">
-        <UDropdown :items="version" :popper="{ placement: 'bottom-start' }">
-            <UButton color="green" :label="'Version ' + selectedLabel"
-                trailing-icon="i-heroicons-chevron-down-20-solid" />
-        </UDropdown>
-        <div :class="ui.table.wrapper">
-            <div :class="ui.table.title">Entity Definition</div>
-            <div :class="[ui.table.content.base, ui.table.content.padding, ui.table.content.text]">
-                <div v-for="mridEntity in mridEntities" :key="mridEntity.value">
-                    <div>{{ mridEntity.columnName + ` (Total: ${getAllMridIds().length})`}}</div>
-                    <UDropdown :items="mridEntity.entityType" :popper="{ placement: 'bottom-start' }" :ui="dropdownScrollableConfig">
-                        <UButton color="white" :label="mridEntity.label"
-                            trailing-icon="i-heroicons-chevron-down-20-solid" />
-                    </UDropdown>
-                </div>
-                <div v-for="entity in entities" :key="entity.value">
-                    <div class="truncate whitespace-nowrap">{{ entity.columnName }}</div>
-                    <UBadge :label="entity.badgeLabel" color="white" size="lg" />
+    <ClientOnly>
+        <div :class="ui.wrapper">
+            <UDropdown :items="version" :popper="{ placement: 'bottom-start' }">
+                <UButton color="green" :label="'Version ' + selectedLabel"
+                    trailing-icon="i-heroicons-chevron-down-20-solid" />
+            </UDropdown>
+            <div :class="ui.table.wrapper">
+                <div :class="ui.table.title">Entity Definition</div>
+                <div :class="[ui.table.content.base, ui.table.content.padding, ui.table.content.text]">
+                    <div v-for="mridEntity in mridEntities" :key="mridEntity.value">
+                        <div>{{ mridEntity.columnName + ` (Total: ${getAllMridIds().length})`}}</div>
+                        <UDropdown :items="mridEntity.entityType" :popper="{ placement: 'bottom-start' }"
+                            :ui="dropdownScrollableConfig">
+                            <UButton color="white" :label="mridEntity.label"
+                                trailing-icon="i-heroicons-chevron-down-20-solid" />
+                        </UDropdown>
+                    </div>
+                    <div v-for="entity in entities" :key="entity.value">
+                        <div class="truncate whitespace-nowrap">{{ entity.columnName }}</div>
+                        <UBadge :label="entity.badgeLabel" color="white" size="lg" />
+                    </div>
                 </div>
             </div>
+
+            <div class="w-full pl-4 pr-4 border rounded-xl p-4 space-y-8">
+                <div :class="ui.table.title">Validation Criteria</div>
+                <div class="w-full flex flex-row items-start p-4 border rounded-xl">
+                    <div class="w-fit p-4">
+                        <div :class="ui.table.content.title">Must Satisfy</div>
+                        <div :class="'text-left dark:text-gray-400'">
+                            {{ currentMridData?.mustSatisfy || 'No Data' }}
+                        </div>
+                    </div>
+                    <div class="w-1/4 p-4">
+                        <div :class="ui.table.content.title">Keyword</div>
+                        <div :class="ui.table.content.text">{{ currentMridData?.keyword || 'No Data' }}</div>
+                    </div>
+                    <div class="w-fit md:w-1/2 p-4">
+                        <div>
+                            <div :class="ui.table.content.title">Dependencies</div>
+                            <div :class="ui.table.content.text"
+                                v-html="(currentMridData?.dependencies || 'No Data').replace(/,\s*/g, ',<br>')"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-for="req_cond in requirement_condition" :key="req_cond.value">
+                    <div class="text-xl absolute font-bold font-mono p-4">{{ req_cond.columnName }}</div>
+                    <div class="relative flex flex-row items-start pt-20 p-8 space-x-10 border rounded-xl">
+                        <div class="w-1/6 flex-shrink-0">
+                            <div :class="ui.table.content.title">{{ req_cond.checkFunction }}</div>
+                            <div :class="ui.table.content.text">
+                                {{ req_cond.value === 'requirement' ? (req_cond.requirements[0] as any).checkFunction :
+                                (req_cond.requirements[0] as any)?.checkFunction }}
+                            </div>
+                        </div>
+                        <div class="w-1/3 flex-shrink-0">
+                            <div :class="ui.table.content.title">{{ req_cond.description }}</div>
+                            <div
+                                :class="[req_cond.requirements[1]?.description !== 'No description available' ? 'text-left dark:text-gray-400' : ui.table.content.text ]">
+                                {{ req_cond.value === 'requirement' ? (req_cond.requirements[1] as any).description :
+                                (req_cond.requirements[1] as any)?.description }}
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div :class="ui.table.content.title">{{ req_cond.arguments }}</div>
+                            <div class="text-center dark:text-gray-400 whitespace-pre-line list-outside">
+                                {{ req_cond.value === 'requirement' ? (req_cond.requirements[2] as any).reqArguments :
+                                (req_cond.requirements[2] as any)?.conditionArguments }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-        <div class="w-full pl-4 pr-4 border rounded-xl p-4 space-y-8">
-            <div :class="ui.table.title">Validation Criteria</div>
-            <div class="w-full flex flex-row items-start p-4 border rounded-xl">
-                <div class="w-fit p-4">
-                    <div :class="ui.table.content.title">Must Satisfy</div>
-                    <div :class="'text-left dark:text-gray-400'">
-                        {{ currentMridData?.mustSatisfy || 'No Data' }}
-                    </div>
-                </div>
-                <div class="w-1/4 p-4">
-                    <div :class="ui.table.content.title">Keyword</div>
-                    <div :class="ui.table.content.text">{{ currentMridData?.keyword || 'No Data' }}</div>
-                </div>
-                <div class="w-fit md:w-1/2 p-4">
-                    <div>
-                        <div :class="ui.table.content.title">Dependencies</div>
-                        <div :class="ui.table.content.text"
-                            v-html="(currentMridData?.dependencies || 'No Data').replace(/,\s*/g, ',<br>')"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-for="req_cond in requirement_condition" :key="req_cond.value">
-                <div class="text-xl absolute font-bold font-mono p-4">{{ req_cond.columnName }}</div>
-                <div class="relative flex flex-row items-start pt-20 p-8 space-x-10 border rounded-xl">
-                    <div class="w-1/6 flex-shrink-0">
-                        <div :class="ui.table.content.title">{{ req_cond.checkFunction }}</div>
-                        <div :class="ui.table.content.text">
-                            {{ req_cond.value === 'requirement' ? (req_cond.requirements[0] as any).checkFunction :
-                            (req_cond.requirements[0] as any)?.checkFunction }}
-                        </div>
-                    </div>
-                    <div class="w-1/3 flex-shrink-0">
-                        <div :class="ui.table.content.title">{{ req_cond.description }}</div>
-                        <div
-                            :class="[req_cond.requirements[1]?.description !== 'No description available' ? 'text-left dark:text-gray-400' : ui.table.content.text ]">
-                            {{ req_cond.value === 'requirement' ? (req_cond.requirements[1] as any).description :
-                            (req_cond.requirements[1] as any)?.description }}
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <div :class="ui.table.content.title">{{ req_cond.arguments }}</div>
-                        <div class="text-center dark:text-gray-400 whitespace-pre-line list-outside">
-                            {{ req_cond.value === 'requirement' ? (req_cond.requirements[2] as any).reqArguments :
-                            (req_cond.requirements[2] as any)?.conditionArguments }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    </ClientOnly>
 </template>
 
 <script setup lang="ts">

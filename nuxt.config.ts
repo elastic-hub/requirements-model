@@ -1,6 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  app: {
+    // Allow overriding the base URL (useful for GitHub Pages under a repo path)
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
+  },
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui',

@@ -16,6 +16,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.filips_token }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      NUXT_APP_BASE_URL: "/requirements-model/"
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
@@ -24,7 +25,7 @@ jobs:
           node-version: "20"
       # Pick your own package manager and build script
       - run: npm install
-      - run: npm run generate
+      - run: npx nuxt build --preset github_pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

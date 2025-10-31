@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "build:gh": "cross-env NUXT_APP_BASE_URL=/requirements-model/ npx nuxt build --preset github_pages",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -27,5 +28,7 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9"
+  ,
+    "cross-env": "^7.0.3"
   }
 }

@@ -14,19 +14,19 @@ import { useThrow404 } from '~/composables/nuxt/error/useThrow404'
 const route = useRoute()
 
 const { data: localContent } = await useAsyncData(`localContent-${route.path}`, () => {
-    return useQueryCollection('localContent').path(route.path).first()
+    return queryCollection('localContent').path(route.path).first()
 })
 const pageID = localContent.value?.id
 
 let page: any
 if (pageID?.startsWith('localContent')) {
     const { data } = await useAsyncData(`${route.path}`, () => {
-        return useQueryCollection('localContent').path(route.path).first()
+        return queryCollection('localContent').path(route.path).first()
     })
     page = data
 } else {
     const { data } = await useAsyncData(`content-${route.path}`, () => {
-        return useQueryCollection('content').path(route.path).first()
+        return queryCollection('content').path(route.path).first()
     })
     page = data
 }

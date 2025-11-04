@@ -17,7 +17,7 @@ const route = useRoute()
 
 // First check if the content exists in localContent collection
 const { data: localContent } = await useAsyncData(`localContent-${route.path}`, () => {
-    return queryCollection('localContent').path(route.path).first().catch(() => null)
+    return queryCollection('localContent').path(route.path).first()
 })
 const pageID = localContent.value?.id
 

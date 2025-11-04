@@ -54,7 +54,7 @@ const footer = useAppConfig().footer;
 
 const route = useRoute()
 const { data: page } = await useAsyncData("/footer-content", () => {
-  return useQueryCollection('localContent').path("/footer-content").first().catch(() => null)
+  return useQueryCollection('localContent').path("/footer-content").first()
 })
 const date = new Date();
 const year = date.getFullYear();

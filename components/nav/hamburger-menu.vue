@@ -105,8 +105,8 @@ const year = date.getFullYear();
 // )
 import { useQueryCollectionNavigation } from '~/composables/nuxt/nav/useQueryCollectionNavigation'
 const {data: navigation} = await useQueryCollectionNavigation()
-const { data: localContent } = await useAsyncData('localContent-nav-hamburger', () => {
-    return queryCollectionNavigation('localContent').catch(() => [])
+const { data: localContent } = await useAsyncData(() => {
+    return queryCollectionNavigation('localContent')
 })
 
 const router = useRouter()

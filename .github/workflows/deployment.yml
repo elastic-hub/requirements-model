@@ -25,8 +25,8 @@ jobs:
           node-version: "20"
       # Pick your own package manager and build script
       - run: npm install
-      - run: npx nuxt build --preset github_pages
-      - run: mkdir -p ./.output/public && touch ./.output/public/.nojekyll
+      - run: npx nuxt generate
+      - run: touch ./.output/public/.nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -60,6 +60,7 @@ export default defineNuxtConfig({
       failOnError: false,
       ignore: ['/api'],
     },
+    compressPublicAssets: true,
   },
   
   router: {

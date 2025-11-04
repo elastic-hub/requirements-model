@@ -1,7 +1,7 @@
 <template>
-  <div :class="ui.wrapper">
+  <div :class="ui.wrapper" v-if="route.path !== '/'">
     <div :class="ui.inner">
-      <NuxtLink v-if="route.path !== '/index'" to="/"
+      <NuxtLink to="/"
         :class="[ui.linkCrumb, { 'hidden': breadcrumbs.length > 2, 'lg:flex': breadcrumbs.length > 2 }]">
         <UIcon :name="iconHome" dynamic :class="ui.iconHome" />
         HOME

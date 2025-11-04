@@ -196,7 +196,7 @@ export default defineAppConfig({
   menus: {
     menu_order: [],
     routes: {
-      ignore: [],
+      ignore: ['/meetings'],
       titles: {
         ignore: [], //in a md file use in frontmatter (navigation: false) without () to get the same effect
       }

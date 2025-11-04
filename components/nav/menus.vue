@@ -118,8 +118,8 @@ const navigation = computed(() => {
 
 
 
-const { data: localContent } = await useAsyncData(() => {
-    return queryCollectionNavigation('localContent')
+const { data: localContent } = await useAsyncData('localContent-nav', () => {
+    return queryCollectionNavigation('localContent').catch(() => [])
 })
 
 const excludedTitles: string[] = routes.titles.ignore ? routes.titles.ignore : [] //app.config.menus.routes.titles.ignore

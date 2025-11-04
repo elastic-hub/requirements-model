@@ -52,18 +52,10 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      routes: ['/footer-content', '/mrid', '/', '/index'],
+      routes: ['/footer-content', '/mrid'],
       crawlLinks: true,
       failOnError: false,
       ignore: ['/api'],
     },
-    // Ensure proper route handling for GitHub Pages
-    hooks: {
-      'prerender:routes': (ctx: any) => {
-        // Explicitly add localContent routes
-        ctx.routes.add('/mrid')
-        ctx.routes.add('/footer-content')
-      }
-    }
   },
 })

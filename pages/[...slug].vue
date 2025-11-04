@@ -13,27 +13,24 @@ import { useQueryCollection } from '~/composables/nuxt/nav/useQueryCollection'
 import { useThrow404 } from '~/composables/nuxt/error/useThrow404'
 const route = useRoute()
 
-const { data: localContent } = await useAsyncData(`localContent-${route.path}`, () => {
+// Try to fetch from localContent first
+const { data: localContentPage } = await useAsyncData(`localContent-${route.path}`, () => {
     return queryCollection('localContent').path(route.path).first()
 })
-const pageID = localContent.value?.id
 
-let page: any
-if (pageID?.startsWith('localContent')) {
-    const { data } = await useAsyncData(`${route.path}`, () => {
-        return queryCollection('localContent').path(route.path).first()
-    })
-    page = data
-} else {
-    const { data } = await useAsyncData(`content-${route.path}`, () => {
-        return queryCollection('content').path(route.path).first()
-    })
-    page = data
-}
+// If not found in localContent, try content collection
+const { data: contentPage } = await useAsyncData(`content-${route.path}`, async () => {
+    // Only query content if localContent didn't return anything
+    if (localContentPage.value) return Promise.resolve(null)
+    return queryCollection('content').path(route.path).first()
+})
+
+// Use whichever was found
+const page: any = computed(() => localContentPage.value || contentPage.value)
 
 useThrow404(page)
 
 useHead({
-    title: page.value?.title,
+    title: page.value?.title || 'Page',
 })
 </script>

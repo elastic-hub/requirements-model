@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  
+  ssr: true,
+  
   app: {
     // Allow overriding the base URL (useful for GitHub Pages under a repo path)
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
@@ -52,10 +55,16 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      routes: ['/footer-content', '/mrid'],
+      routes: ['/footer-content', '/mrid', '/'],
       crawlLinks: true,
       failOnError: false,
       ignore: ['/api'],
     },
+    // Ensure routes are properly handled for SPA fallback on GitHub Pages
+    static: true,
+  },
+  
+  experimental: {
+    payloadExtraction: false,
   },
 })

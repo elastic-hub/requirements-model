@@ -4,7 +4,16 @@ export default defineNuxtConfig({
   app: {
     // Allow overriding the base URL (useful for GitHub Pages under a repo path)
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
+    // Ensure assets use the correct base URL
+    cdnURL: process.env.NUXT_APP_BASE_URL || '/',
   },
+  
+  // Enable route rules for better GitHub Pages compatibility
+  routeRules: {
+    '/mrid': { prerender: true },
+    '/footer-content': { prerender: true },
+  },
+  
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui',
@@ -50,9 +59,10 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      routes: ['/footer-content', '/mrid'],
+      routes: ['/footer-content', '/mrid', '/'],
       crawlLinks: true,
       failOnError: false,
+      ignore: ['/api'],
     },
   },
 })

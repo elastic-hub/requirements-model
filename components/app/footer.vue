@@ -1,11 +1,11 @@
 <template>
   <div :class="ui.megaFooter">
-    <img v-if="footer.image.background" :src="footer.image.background" alt="background_image"
+    <img v-if="footerBackgroundSrc" :src="footerBackgroundSrc" alt="background_image"
       :class="ui.backgroundImg" />
     <div :class="ui.contentContainer">
       <div :class="ui.upperContainer">
         <div :class="ui.contentAboveHr">
-          <img :src="footer.image.logo || site.image.logo" alt="logo"
+          <img :src="footerLogoSrc" alt="logo"
             :title="footer.brand.name.value || site.brand.name.value" :class="ui.logo" />
           <div :title="footer.brand.name.value || site.brand.name.value" :class="ui.branding">
             <b :class="ui.name" :style="{
@@ -51,6 +51,20 @@ import { useQueryCollection } from '~/composables/nuxt/nav/useQueryCollection'
 
 const site = useAppConfig().site
 const footer = useAppConfig().footer;
+const runtimeConfig = useRuntimeConfig();
+
+// Helper function to handle base URL for images
+const withBase = (path: string) => {
+  if (!path) return path;
+  const base = runtimeConfig.app.baseURL;
+  // Don't add base if path already includes it or is an external URL
+  if (path.startsWith('http') || path.startsWith(base)) return path;
+  return `${base}${path}`.replace(/\/+/g, '/');
+};
+
+// Computed property for logo path
+const footerLogoSrc = computed(() => withBase(footer.image.logo || site.image.logo));
+const footerBackgroundSrc = computed(() => footer.image.background ? withBase(footer.image.background) : '');
 
 const route = useRoute()
 const { data: page } = await useAsyncData("/footer-content", () => {

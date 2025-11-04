@@ -8,12 +8,24 @@
         <div v-if="subtitle" :class="ui.subtitle">
             <MDC :value="subtitle" />
         </div>
-        <img src="/img/focus_logo_notext.svg" :class="[ui.svg, 'opacity-20 pointer-events-none']" />
+        <img :src="heroLogoSrc" :class="[ui.svg, 'opacity-20 pointer-events-none']" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { hero as config } from "@/ui.config";
+
+const runtimeConfig = useRuntimeConfig();
+
+// Helper function to handle base URL for images
+const withBase = (path: string) => {
+  if (!path) return path;
+  const base = runtimeConfig.app.baseURL;
+  if (path.startsWith('http') || path.startsWith(base)) return path;
+  return `${base}${path}`.replace(/\/+/g, '/');
+};
+
+const heroLogoSrc = computed(() => withBase('img/focus_logo_notext.svg'));
 
 const props = withDefaults(
     defineProps<{

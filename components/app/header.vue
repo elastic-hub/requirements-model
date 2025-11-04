@@ -5,7 +5,7 @@
         <div :class="ui.left">
           <slot name="left">
             <NuxtLink :to="to" :aria-label="ariaLabel" :class="ui.branding">
-              <img :src="header.image.logo || site.image.logo" alt="logo"
+              <img :src="logoSrc" alt="logo"
                 :title="header.brand.name.value || site.brand.name.value" :class="ui.logo" />
               <div class="flex flex-col">
                 <div v-if="header.brand.name.value" :class="ui.name" :style="{
@@ -44,6 +44,19 @@
 const route = useRoute();
 const header = useAppConfig().header;
 const site = useAppConfig().site;
+const runtimeConfig = useRuntimeConfig();
+
+// Helper function to handle base URL for images
+const withBase = (path: string) => {
+  if (!path) return path;
+  const base = runtimeConfig.app.baseURL;
+  // Don't add base if path already includes it or is an external URL
+  if (path.startsWith('http') || path.startsWith(base)) return path;
+  return `${base}${path}`.replace(/\/+/g, '/');
+};
+
+// Computed property for logo path
+const logoSrc = computed(() => withBase(header.image.logo || site.image.logo));
 
 const config = {
   wrapper: "flex flex-col -mb-px sticky top-3 bg-transparent backdrop-blur border rounded-xl dark:bg-[#161924] p-1 ml-5 mr-5 z-50",

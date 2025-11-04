@@ -72,7 +72,7 @@ export default defineAppConfig({
   },
   header: {
     image: {
-      logo: '/img/focus_logo.svg',
+      logo: 'img/focus_logo.svg',
     },
     brand: {
       name: {
@@ -147,7 +147,7 @@ export default defineAppConfig({
   },
   footer: {
     image: {
-      logo: '/img/focus_logo_notext.svg',
+      logo: 'img/focus_logo_notext.svg',
       background: '',
     },
     brand: {

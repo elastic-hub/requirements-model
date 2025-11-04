@@ -60,8 +60,12 @@ export default defineNuxtConfig({
       failOnError: false,
       ignore: ['/api'],
     },
-    // Ensure routes are properly handled for SPA fallback on GitHub Pages
-    static: true,
+  },
+  
+  router: {
+    options: {
+      strict: true, // Prevent automatic trailing slash addition
+    }
   },
   
   experimental: {

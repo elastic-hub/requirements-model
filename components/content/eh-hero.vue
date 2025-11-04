@@ -1,6 +1,6 @@
 <template>
     <div :class="ui.wrapper">
-        <SvgHero :class="ui.svg" />
+        <!-- <SvgHero :class="ui.svg" /> -->
         <UIcon v-if="ui.icon" :name="icon" :class="ui.icon" />
         <div v-if="title" :class="ui.title">
             <MDC :value="title" />
@@ -8,6 +8,7 @@
         <div v-if="subtitle" :class="ui.subtitle">
             <MDC :value="subtitle" />
         </div>
+        <img src="/img/focus_logo_notext.svg" :class="[ui.svg, 'opacity-20 pointer-events-none']" />
     </div>
 </template>
 

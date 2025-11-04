@@ -14,9 +14,26 @@ import { useQueryCollection } from '~/composables/nuxt/nav/useQueryCollection'
 import { useThrow404 } from '~/composables/nuxt/error/useThrow404'
 
 const route = useRoute()
-const { data: page } = await useAsyncData(route.path, () => {
-    return useQueryCollection('content').path(route.path).first()
+
+// First check if the content exists in localContent collection
+const { data: localContent } = await useAsyncData(`localContent-${route.path}`, () => {
+    return queryCollection('localContent').path(route.path).first()
 })
+const pageID = localContent.value?.id
+
+// Query the appropriate collection based on whether localContent exists
+let page: any
+if (pageID?.startsWith('localContent')) {
+    const { data } = await useAsyncData(`web-${route.path}`, () => {
+        return queryCollection('localContent').path(route.path).first()
+    })
+    page = data
+} else {
+    const { data } = await useAsyncData(`web-content-${route.path}`, () => {
+        return queryCollection('content').path(route.path).first()
+    })
+    page = data
+}
 
 useThrow404(page)
 

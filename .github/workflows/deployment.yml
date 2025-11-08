@@ -1,10 +1,12 @@
 # https://github.com/actions/deploy-pages#usage
 name: Deploy to GitHub Pages
+
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,37 +14,60 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    
     env:
       GITHUB_TOKEN: ${{ secrets.filips_token }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      NUXT_APP_BASE_URL: "/requirements-model/"
+      NUXT_APP_BASE_URL: "/static-nuxt-project/" # change this to your repo name from where the GH Pages are running
+    
     steps:
       - uses: actions/checkout@v4
+      
       - run: corepack enable
+      
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      
       # Pick your own package manager and build script
       - run: npm install
+      
       - run: npx nuxt generate
+      
       - run: touch ./.output/public/.nojekyll
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./.output/public
+      
+      - name: Deploy to Static Repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.filips_token }}
+          external_repository: FroudeDescartes/static-nuxt-project
+          publish_branch: main
+          publish_dir: ./.output/public
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy from requirements-model'
+
   # Deployment job
   deploy:
     # Add a dependency to the build job
     needs: build
+    
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
       pages: write      # to deploy to Pages
       id-token: write   # to verify the deployment originates from an appropriate source
+    
     # Deploy to the github_pages environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    
     # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:

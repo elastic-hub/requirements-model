@@ -34,11 +34,10 @@ jobs:
       # 🔹 Get temporary GitHub App token for accessing repo B (FinOps Open Cost and Usage Specification)
       - name: Get GitHub App token
         id: get_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          installation_id: ${{ secrets.GH_INSTALLATION_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
       # 🔹 Build Nuxt 3 site using the short-lived token
       - name: Generate static site

@@ -20,6 +20,12 @@
                     <UBadge :label="entity.badgeLabel" color="white" size="lg" />
                 </div>
             </div>
+            <div v-if="notesEntity.badgeLabel !=='No Data'"
+                :class="[ui.table.content.padding, ui.table.content.text]"
+                class="mx-auto w-fit flex flex-col mt-4">
+                <div class="truncate whitespace-nowrap">{{ notesEntity.columnName }}</div>
+                <UBadge :label="notesEntity.badgeLabel" color="white" size="lg" />
+            </div>
         </div>
 
         <div class="w-full pl-4 pr-4 border rounded-xl p-4 space-y-8">
@@ -51,7 +57,7 @@
                         <div :class="ui.table.content.title">{{ req_cond.checkFunction }}</div>
                         <div :class="ui.table.content.text">
                             {{ req_cond.value === 'requirement' ? (req_cond.requirements[0] as any).checkFunction :
-                                (req_cond.requirements[0] as any)?.checkFunction }}
+                            (req_cond.requirements[0] as any)?.checkFunction }}
                         </div>
                     </div>
                     <div class="w-1/3 flex-shrink-0">
@@ -59,14 +65,14 @@
                         <div
                             :class="[req_cond.requirements[1]?.description !== 'No description available' ? 'text-left dark:text-gray-400' : ui.table.content.text]">
                             {{ req_cond.value === 'requirement' ? (req_cond.requirements[1] as any).description :
-                                (req_cond.requirements[1] as any)?.description }}
+                            (req_cond.requirements[1] as any)?.description }}
                         </div>
                     </div>
                     <div class="flex-1">
                         <div :class="ui.table.content.title">{{ req_cond.arguments }}</div>
                         <div class="text-center dark:text-gray-400 whitespace-pre-line list-outside">
                             {{ req_cond.value === 'requirement' ? (req_cond.requirements[2] as any).reqArguments :
-                                (req_cond.requirements[2] as any)?.conditionArguments }}
+                            (req_cond.requirements[2] as any)?.conditionArguments }}
                         </div>
                     </div>
                 </div>
@@ -166,7 +172,7 @@ const mridEntities = computed(() => [
     },
 ])
 
-const entities = computed(() => [
+const entities = computed(() => [//add Notes, and correct Model Version Introduced
     {
         columnName: 'Entity Type',
         badgeLabel: currentMridData.value?.entityType || 'No Data',
@@ -174,6 +180,22 @@ const entities = computed(() => [
         icon: '',
         entityType: [
             [{ label: currentMridData.value?.entityType || 'No Data', value: currentMridData.value?.entityType || 'No Data' }]
+        ]
+    }, {
+        columnName: 'Status',
+        badgeLabel: currentMridData.value?.status || 'No Data',
+        value: 'status',
+        icon: '',
+        entityType: [
+            [{ label: currentMridData.value?.status || 'No Data', value: currentMridData.value?.status || 'No Data' }]
+        ]
+    }, {
+        columnName: 'Applicability Criteria',
+        badgeLabel: currentMridData.value?.applicabilityCriteria || 'No Data',
+        value: 'applicabilityCriteria',
+        icon: '',
+        entityType: [
+            [{ label: currentMridData.value?.applicabilityCriteria || 'No Data', value: currentMridData.value?.applicabilityCriteria || 'No Data' }]
         ]
     }, {
         columnName: 'Function',
@@ -192,12 +214,12 @@ const entities = computed(() => [
             [{ label: currentMridData.value?.reference || 'No Data', value: currentMridData.value?.reference || 'No Data' }]
         ]
     }, {
-        columnName: 'MR Version Introduced',
-        badgeLabel: currentMridData.value?.mrVersionIntroduced || 'No Data',
-        value: 'mr_version_introduced',
+        columnName: 'Model Version Introduced',
+        badgeLabel: currentMridData.value?.modelVersionIntroduced || 'No Data',
+        value: 'model_version_introduced',
         icon: '',
         entityType: [
-            [{ label: currentMridData.value?.mrVersionIntroduced || 'No Data', value: currentMridData.value?.mrVersionIntroduced || 'No Data' }]
+            [{ label: currentMridData.value?.modelVersionIntroduced || 'No Data', value: currentMridData.value?.modelVersionIntroduced || 'No Data' }]
         ]
     }, {
         columnName: 'Type',
@@ -209,6 +231,23 @@ const entities = computed(() => [
         ]
     }
 ])
+
+const notesEntity = computed(() => ({
+    columnName: 'Notes',
+    badgeLabel: currentMridData.value?.note || currentMridData.value?.notes || 'No Data',
+    value: 'notes',
+    icon: '',
+    entityType: [
+        [{ 
+            label: (currentMridData.value?.note || currentMridData.value?.notes) 
+                ? (currentMridData.value?.note || currentMridData.value?.notes).trim() || 'No Notes'
+                : 'No Data',
+            value: (currentMridData.value?.note || currentMridData.value?.notes) 
+                ? (currentMridData.value?.note || currentMridData.value?.notes).trim() || 'No Notes'
+                : 'No Data'
+        }]
+    ]
+}))
 
 const requirement_condition = computed(() => {
     // Get descriptions for the check functions

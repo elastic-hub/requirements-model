@@ -32,6 +32,6 @@ ui:
     styleButton: outline
     ---
 
-    What is Focus?  
+    What is FOCUS?  
     :::
 ::

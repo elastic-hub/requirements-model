@@ -29,8 +29,8 @@
         <UAccordion :items="accordionItems" color="primary" variant="solid" size="sm" class="not-prose">
           <template #quick-filters>
             <div :class="getQuickFilterClass()">
-              <template v-for="column in sortedFilters">
-                <div class="rounded-lg border" v-if="column.filter">
+              <template v-for="(column, index) in sortedFilters" :key="column.name">
+                <div class="rounded-lg border flex-[0_0_calc(14.28%-0.25rem)] min-w-[180px] max-w-[250px]" v-if="column.filter">
                   <UDivider :label="column.title" class="py-4 overflow-x-auto" />
                   <ul class="max-h-40 overflow-auto">
                     <li v-for="label in Object.keys(stats[column.name]).sort(sortBySelection(column.name))"
@@ -822,27 +822,28 @@ const getQuickFilterClass = () => {
     return column.filter ? res + 1 : res
   }, 0)
 
-  if (numFilterColumns < 2) {
-    return 'grid grid-cols-1 gap-4 min-h-48'
-  } else if (numFilterColumns < 3) {
-    return 'grid grid-cols-2 gap-2 min-h-48'
-  } else if (numFilterColumns < 4) {
-    return 'grid grid-cols-3 gap-1 min-h-48'
-  } else if (numFilterColumns < 5) {
-    return 'grid grid-cols-4 gap-1 min-h-48'
-  } else if (numFilterColumns < 6) {
-    return 'grid grid-cols-5 gap-1 min-h-48'
-  } else if (numFilterColumns < 7) {
-    return 'grid grid-cols-6 gap-1 min-h-48'
-  } else if (numFilterColumns < 8) {
-    return 'grid grid-cols-7 gap-1 min-h-48'
-  } else if (numFilterColumns < 9) {
-    return 'grid grid-cols-8 gap-1 min-h-48'
-  } else if (numFilterColumns < 10) {
-    return 'grid grid-cols-9 gap-1 min-h-48'
-  } else {
-    return 'grid grid-cols-10 gap-1 min-h-48'
-  }
+  // if (numFilterColumns < 2) {
+  //   return 'grid grid-cols-1 gap-4 min-h-48'
+  // } else if (numFilterColumns < 3) {
+  //   return 'grid grid-cols-2 gap-2 min-h-48'
+  // } else if (numFilterColumns < 4) {
+  //   return 'grid grid-cols-3 gap-1 min-h-48'
+  // } else if (numFilterColumns < 5) {
+  //   return 'grid grid-cols-4 gap-1 min-h-48'
+  // } else if (numFilterColumns < 6) {
+  //   return 'grid grid-cols-5 gap-1 min-h-48'
+  // } else if (numFilterColumns < 7) {
+  //   return 'grid grid-cols-6 gap-1 min-h-48'
+  // } else {
+  //   return 'grid grid-cols-7 gap-1 min-h-48'
+  // }// else if (numFilterColumns < 9) {
+  //   return 'grid grid-cols-8 gap-1 min-h-48'
+  // } else if (numFilterColumns < 10) {
+  //   return 'grid grid-cols-9 gap-1 min-h-48'
+  // } else {
+  //   return 'grid grid-cols-10 gap-1 min-h-48'
+  // }
+  return 'flex flex-wrap gap-1 min-h-48 justify-center'
 }
 
 const getStats = (data) => {

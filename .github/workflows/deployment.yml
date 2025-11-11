@@ -1,5 +1,4 @@
-# .github/workflows/deploy.yml
-name: Build & Deploy Nuxt 3 to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   workflow_dispatch:
@@ -8,63 +7,65 @@ on:
       - main
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
       pages: write
+      id-token: write
+    
 
     env:
+      GITHUB_TOKEN: ${{ secrets.filips_token }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      NUXT_APP_BASE_URL: "/static-nuxt-project/" # Must match repo C name
-
+      NUXT_APP_BASE_URL: "/static-nuxt-project/" # change this to your repo name from where the GH Pages are running
+    
     steps:
-      # Checkout repo A (elastic-hub/requirements-model)
-      - uses: actions/checkout@v4
 
-      # Setup Node.js
+      - uses: actions/checkout@v4
+      
+      - run: corepack enable
+      
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: corepack enable
-      - run: npm ci
-
-      # 🔹 Get temporary GitHub App token for accessing repo B (FinOps Open Cost and Usage Specification)
-      - name: Get GitHub App token
-        id: get_token
-        uses: actions/create-github-app-token@v2
+          node-version: "20"
+      
+      - run: npm install
+      
+      - run: npx nuxt generate
+      
+      - run: touch ./.output/public/.nojekyll
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          path: ./.output/public
+      
+      - name: Deploy to Static Repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.filips_token }}
+          external_repository: FroudeDescartes/static-nuxt-project
+          publish_branch: main
+          publish_dir: ./.output/public
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy from requirements-model'
 
-      # 🔹 Build Nuxt 3 site using the short-lived token
-      - name: Generate static site
-        env:
-          GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: |
-          npx nuxt generate
-          touch ./.output/public/.nojekyll
-
-      # 🔹 Deploy to Repo C (FroudeDescartes/static-nuxt-project)
-      - name: Deploy to static-nuxt-project via SSH Deploy Key
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git clone --depth=1 --branch=main git@github.com:FroudeDescartes/static-nuxt-project.git out
-          cp -r .output/public/* out/
-          cd out
-          git add .
-          git commit -m "Deploy $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push origin main
+  deploy:
+    needs: build
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

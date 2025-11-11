@@ -280,14 +280,18 @@ const fetchData = async () => {
         // Path starts after the branch (index 6 for blob URLs)
         const path = pathParts[4] === 'blob' ? pathParts.slice(6).join('/') : pathParts.slice(5).join('/');
 
-        data = await useGitHubGetContent(owner, repo, path, branch);
-
+        //data = await useGitHubGetContent(owner, repo, path, branch);
+      const { data: fetchedData } = await useAsyncData('model-requirements', () => {
+        return queryCollection('modelData').all()
+      })
+      // queryCollection returns an array, we need the first element which contains the actual data
+      data = fetchedData.value?.[0] || fetchedData.value
     } else {
-      data = await useAsyncData(`${route.path}/${props.dataUrl}`, () => {
+      const { data: fetchedData } = await useAsyncData(`${route.path}/${props.dataUrl}`, () => {
         return $fetch(props.dataUrl)
       })
       //data = await $fetch(props.dataUrl);
-      data = JSON.parse(data)
+      data = JSON.parse(fetchedData.value as string)
     }
 
     // Store raw data before any transformations
@@ -303,7 +307,9 @@ const fetchData = async () => {
       } else if (props.transformRawData === "cr12") {
         data = $filterCR12(data)
       } else if (props.transformRawData === 'model_rules_v1_2') {
-        data = $model_rules_v1_2(data)
+        // For queryCollection data, the actual model data is in the 'meta' property
+        const transformData = data.meta || data
+        data = $model_rules_v1_2(transformData)
       }
     }
     nextTick()

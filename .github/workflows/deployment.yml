@@ -19,7 +19,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.filips_token }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      NUXT_APP_BASE_URL: "/static-nuxt-project/" # change this to your repo name from where the GH Pages are running
+      NUXT_APP_BASE_URL: "/focus_requirements_model/" # change this to your repo name from where the GH Pages are running
     
     steps:
 
@@ -46,7 +46,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.filips_token }}
-          external_repository: FroudeDescartes/static-nuxt-project
+          external_repository: FinOps-Open-Cost-and-Usage-Spec/focus_requirements_model
           publish_branch: main
           publish_dir: ./.output/public
           user_name: 'github-actions[bot]'

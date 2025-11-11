@@ -340,14 +340,21 @@ function openModal(itemId?: string) {
       }
     }
 
+    // For queryCollection data, we need to check if the data is in 'meta' property
+    if (parsedData && parsedData.meta) {
+      parsedData = parsedData.meta;
+    }
+
     const objectKey = 'ModelRules'; // Adjust based on your actual data structure
+
+    const itemToConvert = parsedData && parsedData[objectKey]?.hasOwnProperty(itemId)
+      ? parsedData[objectKey][itemId]
+      : null;
 
     // Pass the whole parsed JSON data
     modal.open(dynamicTableYamlModal, {
       itemId: itemId,
-      itemToConvert: parsedData[objectKey]?.hasOwnProperty(itemId)
-        ? parsedData[objectKey][itemId]
-        : null,
+      itemToConvert: itemToConvert,
     })
   } else {
     modal.open(dynamicTableYamlModal, {
@@ -360,6 +367,7 @@ function openMermaidModal(itemId?: string) {
   if (itemId) {
     // Parse raw data if it's a string
     let parsedData = rawData.value;
+    
     if (typeof rawData.value === 'string') {
       try {
         parsedData = JSON.parse(rawData.value);
@@ -369,14 +377,21 @@ function openMermaidModal(itemId?: string) {
       }
     }
 
+    // For queryCollection data, we need to check if the data is in 'meta' property
+    if (parsedData && parsedData.meta) {
+      parsedData = parsedData.meta;
+    }
+
     const objectKey = 'ModelRules'; // Adjust based on your actual data structure
+
+    const itemToConvert = parsedData && parsedData[objectKey]?.hasOwnProperty(itemId)
+      ? parsedData[objectKey][itemId]
+      : null;
 
     // Pass the whole parsed JSON data
     modal.open(dynamicTableMermaidModal, {
       itemId: itemId,
-      itemToConvert: parsedData[objectKey]?.hasOwnProperty(itemId)
-        ? parsedData[objectKey][itemId]
-        : null,
+      itemToConvert: itemToConvert,
     })
   } else {
     modal.open(dynamicTableMermaidModal, {

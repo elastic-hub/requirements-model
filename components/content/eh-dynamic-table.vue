@@ -728,7 +728,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
   const safeDataUrl = (typeof props.dataUrl === 'string') ? props.dataUrl.replace(/'/g, "\\'") : '';
   // Ensure baseUrl ends without trailing slash, then add mrid
   const mridUrl = `${baseUrl.replace(/\/$/, '')}/mrid?mrid_id=${item.id}`;
-  const MRIDReader = `<button onclick="sessionStorage.setItem('mridDataUrl', '${safeDataUrl}'); window.open('${mridUrl}', '_blank');" title="View ${item.id}" class="cursor-pointer mr-2 hover:text-blue-100">${icons[7]}</button>`;
+  const MRIDReader = `<a href="${mridUrl}" target="_blank" title="View ${item.id}" class="cursor-pointer mr-2 !text-golden hover:text-blue-100">${icons[7]}</a>`;
 
   return yamlButton + mermaidDiagram + MRIDReader;
   } else if (Array.isArray(column.typeData) && column.typeData.includes('idURL') && column.name === 'idURL') {

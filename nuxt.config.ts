@@ -4,6 +4,13 @@ export default defineNuxtConfig({
   
   ssr: true,
   
+  // Handle specific routes differently for SSG
+  routeRules: {
+    '/mrid': { ssr: false }, // Client-side rendering for dynamic MRID pages
+    '/': { prerender: true },
+    '/footer-content': { prerender: true },
+  },
+  
   app: {
     // Allow overriding the base URL (useful for GitHub Pages under a repo path)
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
@@ -61,6 +68,12 @@ export default defineNuxtConfig({
       ignore: ['/api'],
     },
     compressPublicAssets: true,
+    // Ensure external data is available during build
+    storage: {
+      redis: {
+        driver: 'memory'
+      }
+    }
   },
   
   router: {

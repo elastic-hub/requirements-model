@@ -6,7 +6,7 @@ export default defineContentConfig({
       type: 'page',
       source: {
         repository: 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/meetings/tree/dev', // to checkout the content from another branch add /tree/<branch-name> to the end of the url
-        include: '**/*.md',
+        include: '**/*.{md,json}', // include both markdown and JSON files
         exclude: ['templates/*.md', 'buddymentor', 'meeting_selection', 'meetings/!(upcoming_agenda|latest_minutes)/**', 'reports', 'topics'], //'README.md'
         authToken: process.env.GITHUB_TOKEN,
       },

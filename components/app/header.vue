@@ -87,7 +87,7 @@ const props = withDefaults(
     class?: any;
   }>(),
   {
-    to: "/readme",
+    to: "/",
     title: undefined,
     ui: () => ({}),
     class: undefined,

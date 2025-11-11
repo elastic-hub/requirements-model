@@ -1,5 +1,5 @@
 ---
-title: Welcome to ElasticHub
+title: Welcome to FOCUS Analyzer
 layout: web
 navigation: false
 ---
@@ -18,7 +18,7 @@ ui:
 ---
     :::EhButton
     ---
-    urlButton: '/readme'
+    urlButton: '/introduction/'
     target: '_self'
     styleButton: outline 
     ---

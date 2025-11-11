@@ -19,7 +19,7 @@ import { useThrow404 } from '~/composables/nuxt/error/useThrow404'
 const route = useRoute()
 
 const { data: home } = await useAsyncData(`${route.path}`, () => {
-  return useQueryCollection('content').path('/readme').first()
+  return useQueryCollection('localContent').path('/').first()
 })
 
 useSeoMeta({

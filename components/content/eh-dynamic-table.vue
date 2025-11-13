@@ -86,11 +86,11 @@
         </div>
       </div>
       <div :class="ui.pagination">
-        <div class="flex flex-row justify-between">
-          <div class="text-xs">
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:justify-between overflow-hidden">
+          <div class="text-xs mx-auto sm:mx-0">
             {{ infoMessage }}
           </div>
-          <UPagination v-model="page" :page-count="perPage" :total="numberOfItems" :max="10" @click="onPageChange"
+          <UPagination class="mx-auto sm:mx-0" v-model="page" :page-count="perPage" :total="numberOfItems" :max="maxPaginationItems" @click="onPageChange"
             show-last show-first />
         </div>
       </div>
@@ -489,6 +489,33 @@ const accordionItems = toRef([
     defaultOpen: true
   }
 ])
+
+// Responsive pagination max items based on screen size
+const windowWidth = ref(1024) // Default for SSR
+
+const maxPaginationItems = computed(() => {
+  if (windowWidth.value >= 1024) return 10  // lg breakpoint and larger
+  if (windowWidth.value >= 640) return 7    // sm breakpoint and larger
+  return 5                                  // mobile (below sm)
+})
+
+onMounted(() => {
+  // Set initial window width
+  windowWidth.value = window.innerWidth
+  
+  // Update on resize
+  const updateWindowWidth = () => {
+    windowWidth.value = window.innerWidth
+  }
+  
+  window.addEventListener('resize', updateWindowWidth)
+  
+  // Cleanup on unmount
+  onUnmounted(() => {
+    window.removeEventListener('resize', updateWindowWidth)
+  })
+})
+
 const sortColumn = toRef({})
 // Default sorting: show newest meetings first by meetingID date when possible
 // meetingID values often contain an 8-digit YYYYMMDD substring (e.g. "focus_20250501").
@@ -843,7 +870,7 @@ const getQuickFilterClass = () => {
   // } else {
   //   return 'grid grid-cols-10 gap-1 min-h-48'
   // }
-  return 'flex flex-wrap gap-1 min-h-48 justify-center'
+  return 'flex flex-wrap gap-1 min-h-48 justify-center gap-y-4'
 }
 
 const getStats = (data) => {

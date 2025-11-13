@@ -71,7 +71,7 @@ const config = {
   menus: "z-50",
   right: "flex items-center gap-1.5 ml-auto",
   colorMode: "hidden 2xl:flex",
-  login: "mr-2 text-base",
+  login: "mr-2 hidden sm:block text-base",
   socialLinks: "text-xl hidden 2xl:flex",
   hamburgerMenu: "xl:hidden order-last z-50 cursor-pointer ml-4",
   hr: "mt-1 border-neutral-50/[0.5] dark:border-neutral-700",

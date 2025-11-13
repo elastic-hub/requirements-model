@@ -9,11 +9,12 @@
                 <template #header>
                     <div class="flex h-8 justify-between items-center">
                         <AppSocialLinks class="text-2xl space-x-1" />
-                        <div class="flex items-center">
+                        <div class="flex items-center space-x-4">
                             <!-- <AppColorMode class="" /> -->
+                            <AppLogin class="flex sm:hidden mt-1" />
                             <UIcon name="material-symbols-light:right-panel-close" title="Close sidemenu" dynamic
                                 @click="isOpen = false"
-                                class="text-4xl mb-2 text-slate-600 dark:text-golden hover:text-red-500 dark:hover:text-red-500 cursor-pointer" />
+                                class="text-4xl hover:text-red-500 dark:hover:text-red-500 cursor-pointer" />
                         </div>
                     </div>
                     <hr v-if="showBreadcrumbs" class="flex md:hidden border-golden/35 mt-5 mb-2 w-[95%] mx-auto">

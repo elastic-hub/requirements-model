@@ -216,7 +216,7 @@ export default defineAppConfig({
     github: {
       title: "GitHub",
       logo: "i-fa6-brands-square-github",
-      url: "https://github.com/finopsfoundation",
+      url: "https://github.com/FinOps-Open-Cost-and-Usage-Spec",
     },
   },
   usefulLinks: {
@@ -233,7 +233,7 @@ export default defineAppConfig({
     },
     github: {
       title: "GitHub",
-      url: "https://github.com/finopsfoundation",
+      url: "https://github.com/FinOps-Open-Cost-and-Usage-Spec",
       icon: "i-fa6-brands-square-github"
     }
   }

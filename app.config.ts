@@ -216,7 +216,7 @@ export default defineAppConfig({
     github: {
       title: "GitHub",
       logo: "i-fa6-brands-square-github",
-      url: "https://github.com/FinOps-Open-Cost-and-Usage-Spec",
+      url: "https://github.com/FinOps-Open-Cost-and-Usage-Spec/focus_requirements_model",
     },
   },
   usefulLinks: {

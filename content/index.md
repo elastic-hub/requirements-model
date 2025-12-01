@@ -6,8 +6,8 @@ navigation: false
 
 ::EhHero
 ---
-title: The Unifying Format for Cloud Billing Data
-subtitle: An open specification that normalizes cost and usage datasets across cloud vendors and reduces complexity for FinOps Practitioners.
+title: The Requirements Model Analyzer
+subtitle: Automatically extract, structure, and govern normative rules from FOCUS specifications—turning complex Markdown into precise, machine-readable requirements for conformance, validation, and release readiness
 ---
 ::
 

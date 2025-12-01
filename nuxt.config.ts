@@ -7,8 +7,10 @@ export default defineNuxtConfig({
   // Handle specific routes differently for SSG
   routeRules: {
     '/mrid': { ssr: false }, // Client-side rendering for dynamic MRID pages
-    '/': { prerender: true },
+    '/': { ssr: true, prerender: true },
     '/footer-content': { prerender: true },
+    '/analyzer': { ssr: false },
+    '/introduction': { ssr: false },
   },
   
   app: {

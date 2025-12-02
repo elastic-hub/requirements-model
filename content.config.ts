@@ -21,7 +21,7 @@ export default defineContentConfig({
       schema: z.object({}), // Allow any JSON object structure
     }),
     localContent: defineCollection({
-      source: '**/*.md',
+      source: '**/*',
       type: 'page'
     }),
     prompts: defineCollection({

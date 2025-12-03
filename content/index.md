@@ -18,7 +18,7 @@ ui:
 ---
     :::EhButton
     ---
-    urlButton: '/introduction/'
+    urlButton: '/introduction'
     target: '_self'
     styleButton: outline 
     ---

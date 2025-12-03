@@ -18,6 +18,11 @@ export default defineNuxtConfig({
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
     // Ensure assets use the correct base URL
     cdnURL: process.env.NUXT_APP_BASE_URL || '/',
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
   },
   devtools: { enabled: true },
   modules: [

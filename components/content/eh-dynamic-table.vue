@@ -30,7 +30,8 @@
           <template #quick-filters>
             <div :class="getQuickFilterClass()">
               <template v-for="(column, index) in sortedFilters" :key="column.name">
-                <div class="rounded-lg border flex-[0_0_calc(14.28%-0.25rem)] min-w-[180px] max-w-[250px]" v-if="column.filter">
+                <div class="rounded-lg border flex-[0_0_calc(14.28%-0.25rem)] min-w-[180px] max-w-[250px]"
+                  v-if="column.filter">
                   <UDivider :label="column.title" class="py-4 overflow-x-auto" />
                   <ul class="max-h-40 overflow-auto">
                     <li v-for="label in Object.keys(stats[column.name]).sort(sortBySelection(column.name))"
@@ -90,8 +91,8 @@
           <div class="text-xs mx-auto sm:mx-0">
             {{ infoMessage }}
           </div>
-          <UPagination class="mx-auto sm:mx-0" v-model="page" :page-count="perPage" :total="numberOfItems" :max="maxPaginationItems" @click="onPageChange"
-            show-last show-first />
+          <UPagination class="mx-auto sm:mx-0" v-model="page" :page-count="perPage" :total="numberOfItems"
+            :max="maxPaginationItems" @click="onPageChange" show-last show-first />
         </div>
       </div>
     </div>
@@ -196,6 +197,9 @@ const { setMridData, setLoading } = useMridData()
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
 
+// Generate unique component ID for this instance
+const componentId = `dynamic-table-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 const PER_PAGE_LIST = config.perPage
 //const recordingIcon = config.icons.recording
 
@@ -269,22 +273,30 @@ const fetchData = async () => {
     let data;
     const keywords = useAppConfig().dynamic_table.fetch.dataUrl.includes
 
-    if (keywords.some(keyword => props.dataUrl.includes(keyword))) {
-
-        const url = new URL(props.dataUrl.toString());
-        const pathParts = url.pathname.split('/');
-        const owner = pathParts[1];
-        const repo = pathParts[2];
-        // Extract branch - it's typically at index 4 in GitHub URLs like /owner/repo/blob/branch/path
-        const branch = pathParts[4] === 'blob' ? pathParts[5] : pathParts[4];
-        // Path starts after the branch (index 6 for blob URLs)
-        const path = pathParts[4] === 'blob' ? pathParts.slice(6).join('/') : pathParts.slice(5).join('/');
-
-        //data = await useGitHubGetContent(owner, repo, path, branch);
+    //first two statements are hardcoded for now. This needs to be changed later
+    if (props.dataUrl.includes('model')) { //keywords.some(keyword => props.dataUrl.includes(keyword))
       const { data: fetchedData } = await useAsyncData('model-requirements', () => {
         return queryCollection('modelData').all()
       })
-      // queryCollection returns an array, we need the first element which contains the actual data
+
+      // Find the specific model file based on dataUrl
+      if (Array.isArray(fetchedData.value)) {
+        // Check if dataUrl specifies a version (e.g., model-1.2 or model-1.3)
+        const versionMatch = props.dataUrl.match(/model-(\d+\.\d+)/);
+        if (versionMatch) {
+          const requestedVersion = versionMatch[0]; // e.g., "model-1.3"
+          data = fetchedData.value.find(file => file.id.includes(requestedVersion)) || fetchedData.value[0];
+        } else {
+          // Default to first file if no version specified
+          data = fetchedData.value[0];
+        }
+      } else {
+        data = fetchedData.value;
+      }
+    } else if (props.dataUrl.includes('meetingRegister')) {
+      const { data: fetchedData } = await useAsyncData('meeting-registry', () => {
+        return queryCollection('meetingRegistry').all()
+      })
       data = fetchedData.value?.[0] || fetchedData.value
     } else {
       const { data: fetchedData } = await useAsyncData(`${route.path}/${props.dataUrl}`, () => {
@@ -303,7 +315,8 @@ const fetchData = async () => {
 
     if (props.transformRawData) {
       if (props.transformRawData === "filterTopic") {
-        data = $filterTopic(data)
+        const transformData = data.meta || data
+        data = $filterTopic(transformData)
       } else if (props.transformRawData === "cr12") {
         data = $filterCR12(data)
       } else if (props.transformRawData === 'model_rules_v1_2') {
@@ -367,7 +380,7 @@ function openMermaidModal(itemId?: string) {
   if (itemId) {
     // Parse raw data if it's a string
     let parsedData = rawData.value;
-    
+
     if (typeof rawData.value === 'string') {
       try {
         parsedData = JSON.parse(rawData.value);
@@ -423,13 +436,13 @@ const reformatColumnValues = (data) => {
 const updateData = async () => {
   setLoading(true)
   items.value = await fetchData()
-  
+
   // Store data in the shared composable for MRID components
   // Only store if this table is using the mr12 transformer (MRID data)
   if (props.transformRawData === 'model_rules_v1_2') {
     setMridData(items.value)
   }
-  
+
   setLoading(false)
   nextTick()
   sortFilters()
@@ -502,14 +515,14 @@ const maxPaginationItems = computed(() => {
 onMounted(() => {
   // Set initial window width
   windowWidth.value = window.innerWidth
-  
+
   // Update on resize
   const updateWindowWidth = () => {
     windowWidth.value = window.innerWidth
   }
-  
+
   window.addEventListener('resize', updateWindowWidth)
-  
+
   // Cleanup on unmount
   onUnmounted(() => {
     window.removeEventListener('resize', updateWindowWidth)
@@ -674,9 +687,9 @@ const getItemColumValue = (item: (any), column: (any)) => {
   if (column.type === 'url' && column.name === 'icon') {
 
     const accessRoles = useState<string[]>('access-roles')?.value || []
-    const allowedRoles = useAppConfig().middleware.auth.allowed_roles || []
+    const allowed_roles = (runtimeConfig.github?.allowedRoles as unknown as string[]) || []
 
-    const hasAccess = accessRoles.some(role => allowedRoles.includes(role))
+    const hasAccess = accessRoles.some(role => allowed_roles.includes(role))
 
     const links = (column?.typeData || [])
       .map((keyOrValue: string) => {
@@ -697,12 +710,11 @@ const getItemColumValue = (item: (any), column: (any)) => {
           // if (!hasAccess) return ''
 
           if (suffix === 'meetingID') {
-            return `<a href="${baseUrl}/analysis?meeting_id=${item.meetingID}" target="_blank" title="Analyse ${item.meetingID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
+            return `<a href="/analysis?meeting_id=${item.meetingID}" target="_blank" title="Analyse ${item.meetingID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
           } else if (suffix === 'topicID') {
-            return `<a href="${baseUrl}/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
+            return `<a href="/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
           } else if (suffix === 'combinedID') {
-            return `<button onclick="sessionStorage.setItem('meetingRegister', '${props.dataUrl}'); window.open('${baseUrl}/analysis?combined_id=${item.combinedID}', '_blank');" title="Analyse ${item.combinedID}" class="cursor-pointer mr-2 hover:text-blue-100">${iconConfig.svg}</button>`
-
+            return `<a href="/analysis?combined_id=${item.combinedID}" target="_blank" title="Analyse ${item.combinedID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');" class="cursor-pointer mr-2 !dark:text-golden !hover:text-blue-100">${iconConfig.svg}</a>`
           } else {
             // Default ai behavior if no suffix
             return iconConfig.svg
@@ -713,7 +725,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
           const topicUrl = item.link || item.idURL || ''
           const meetingID = item.meetingID || item.combinedID || '';
           const minutesUrl = item.minutesUrl || '';
-          return `<button onclick="window.buddyMentorAndAnalysis('${topicId}', '${topicTitle}', '${topicUrl}', '${meetingID}', '${minutesUrl}');"
+          return `<button onclick="document.dispatchEvent(new CustomEvent('buddyMentorAndAnalysis', { detail: { componentId: '${componentId}', topicId: '${topicId}', topicTitle: '${topicTitle}', topicUrl: '${topicUrl}', meetingID: '${meetingID}', minutesUrl: '${minutesUrl}' } }))"
                   title="${iconConfig.tooltip + ' ' + topicId}" class="cursor-pointer">${iconConfig.svg}</button>`
         } else if (baseKey === 'recording') {
           return `<a href="${item.recording}" target="_blank" title="${iconConfig.tooltip}">${iconConfig.svg}</a>`
@@ -750,14 +762,14 @@ const getItemColumValue = (item: (any), column: (any)) => {
     result = links.join('\n')
   } else if (column.type === 'url' && column.name === 'SCR_Icon') {
     // Multiple buttons for different actions
-  const yamlButton = `<button onclick="window.openYamlModal('${item.id}')" title="See ${item.id} in YAML format" class="cursor-pointer mr-2">${icons[6]}</button>`;
-  const mermaidDiagram = `<button onclick="window.openMermaidModal('${item.id}')" title="Show ${item.id} Mermaid diagram" class="cursor-pointer mr-2">${icons[8]}</button>`;
-  const safeDataUrl = (typeof props.dataUrl === 'string') ? props.dataUrl.replace(/'/g, "\\'") : '';
-  // Ensure baseUrl ends without trailing slash, then add mrid
-  const mridUrl = `${baseUrl.replace(/\/$/, '')}/mrid?mrid_id=${item.id}`;
-  const MRIDReader = `<a href="${mridUrl}" target="_blank" title="View ${item.id}" class="cursor-pointer mr-2 !text-golden hover:text-blue-100">${icons[7]}</a>`;
+    const yamlButton = `<button onclick="document.dispatchEvent(new CustomEvent('openYamlModal', { detail: { componentId: '${componentId}', itemId: '${item.id}' } }))" title="See ${item.id} in YAML format" class="cursor-pointer mr-2">${icons[6]}</button>`;
+    const mermaidDiagram = `<button onclick="document.dispatchEvent(new CustomEvent('openMermaidModal', { detail: { componentId: '${componentId}', itemId: '${item.id}' } }))" title="Show ${item.id} Mermaid diagram" class="cursor-pointer mr-2">${icons[8]}</button>`;
+    const safeDataUrl = (typeof props.dataUrl === 'string') ? props.dataUrl.replace(/'/g, "\\'") : '';
+    // Ensure baseUrl ends without trailing slash, then add mrid
+    const mridUrl = `${baseUrl.replace(/\/$/, '')}/mrid?mrid_id=${item.id}`;
+    const MRIDReader = `<a href="${mridUrl}" target="_blank" title="View ${item.id}" class="cursor-pointer mr-2 !text-golden hover:text-blue-100">${icons[7]}</a>`;
 
-  return yamlButton + mermaidDiagram + MRIDReader;
+    return yamlButton + mermaidDiagram + MRIDReader;
   } else if (Array.isArray(column.typeData) && column.typeData.includes('idURL') && column.name === 'idURL') {
     const platform = item.platform
     const link = item.link
@@ -1186,43 +1198,61 @@ const copyToClipboard = async () => {
 }
 
 
-onMounted(() => {
-  // Set up global functions for buddy mentor modal and combined action
-  (window as any).openBuddyMentor = (topicId: string, topicTitle: string, topicUrl?: string, meetingID?: string, minutesUrl?: string) => {
-    selectedTopicId.value = topicId
-    selectedTopicTitle.value = topicTitle
-    selectedTopicUrl.value = topicUrl || ''
-    selectedMeetingID.value = meetingID || ''
-    selectedMeetingUrl.value = minutesUrl || ''
+// Event handlers for this component instance
+const handleOpenYamlModal = (event: CustomEvent) => {
+  if (event.detail.componentId === componentId) {
+    openModal(event.detail.itemId)
+  }
+}
+
+const handleOpenMermaidModal = (event: CustomEvent) => {
+  if (event.detail.componentId === componentId) {
+    openMermaidModal(event.detail.itemId)
+  }
+}
+
+const handleOpenBuddyMentor = (event: CustomEvent) => {
+  if (event.detail.componentId === componentId) {
+    selectedTopicId.value = event.detail.topicId
+    selectedTopicTitle.value = event.detail.topicTitle
+    selectedTopicUrl.value = event.detail.topicUrl || ''
+    selectedMeetingID.value = event.detail.meetingID || ''
+    selectedMeetingUrl.value = event.detail.minutesUrl || ''
     buddy_mentor_open.value = true
   }
+}
 
-  // Function to open YAML modal
-  (window as any).openYamlModal = (itemId: string) => {
-    openModal(itemId)
-  }
-
-  // Function to open Mermaid modal
-  (window as any).openMermaidModal = (itemId: string) => {
-    openMermaidModal(itemId)
-  }
-
-  // Combined function to run both buddy mentor and analysis
-  (window as any).buddyMentorAndAnalysis = async (topicId: string, topicTitle: string, topicUrl?: string, meetingID?: string, minutesUrl?: string) => {
-    (window as any).openBuddyMentor(topicId, topicTitle, topicUrl, meetingID, minutesUrl);
+const handleBuddyMentorAndAnalysis = async (event: CustomEvent) => {
+  if (event.detail.componentId === componentId) {
+    selectedTopicId.value = event.detail.topicId
+    selectedTopicTitle.value = event.detail.topicTitle
+    selectedTopicUrl.value = event.detail.topicUrl || ''
+    selectedMeetingID.value = event.detail.meetingID || ''
+    selectedMeetingUrl.value = event.detail.minutesUrl || ''
+    buddy_mentor_open.value = true
     if (typeof runAnalysis === 'function') {
-      await runAnalysis();
+      await runAnalysis()
     }
   }
+}
+
+onMounted(() => {
+  // Set up event listeners for this component instance
+  document.addEventListener('openYamlModal', handleOpenYamlModal as EventListener)
+  document.addEventListener('openMermaidModal', handleOpenMermaidModal as EventListener)
+  document.addEventListener('openBuddyMentor', handleOpenBuddyMentor as EventListener)
+  document.addEventListener('buddyMentorAndAnalysis', handleBuddyMentorAndAnalysis as EventListener)
+
   updateData()
 })
 
 onUnmounted(() => {
-  // Clean up global functions and typewriter interval
-  delete (window as any).openBuddyMentor
-  delete (window as any).openYamlModal
-  delete (window as any).openMermaidModal
-  delete (window as any).buddyMentorAndAnalysis
+  // Clean up event listeners and typewriter interval
+  document.removeEventListener('openYamlModal', handleOpenYamlModal as EventListener)
+  document.removeEventListener('openMermaidModal', handleOpenMermaidModal as EventListener)
+  document.removeEventListener('openBuddyMentor', handleOpenBuddyMentor as EventListener)
+  document.removeEventListener('buddyMentorAndAnalysis', handleBuddyMentorAndAnalysis as EventListener)
+
   if (typewriterInterval) {
     clearInterval(typewriterInterval)
   }

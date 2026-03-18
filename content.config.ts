@@ -7,15 +7,15 @@ export default defineContentConfig({
       source: {
         repository: 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/meetings/tree/dev', // to checkout the content from another branch add /tree/<branch-name> to the end of the url
         include: '**/*.md', // include only markdown files 
-        exclude: ['templates/*.md', 'buddymentor', 'meeting_selection', 'meetings/**', 'reports', 'topics', 'README.md'], 
+        exclude: ['templates/*.md', 'buddymentor', 'meeting_selection', 'meetings/**', 'reports', 'topics', 'README.md', 'scripts/**'], 
         authToken: process.env.GITHUB_TOKEN,
       },
     }),
     modelData: defineCollection({
       type: 'data',
       source: {
-        repository: 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/meetings/tree/dev',
-        include: '**/model-1.2.json', // target specifically the model-1.2.json file
+        repository: 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/meetings/tree/dev/analyzer',
+        include: '**/model-1.{2.0.1,3}*.json',
         authToken: process.env.GITHUB_TOKEN,
       },
       schema: z.object({}), // Allow any JSON object structure

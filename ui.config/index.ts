@@ -12,6 +12,7 @@ export { default as twoColumns } from "~/ui.config/eh-two-columns"
 export { default as multiColumn } from "~/ui.config/eh-multi-column"
 export { default as column } from "~/ui.config/eh-column"
 export { default as mrid } from "~/ui.config/eh-mrid"
+export { default as tabs } from "~/ui.config/eh-tabs"
 
 export { default as button } from "~/ui.config/eh-button"
 export { default as carousel } from "~/ui.config/eh-carousel"

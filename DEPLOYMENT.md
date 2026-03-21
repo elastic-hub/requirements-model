@@ -33,7 +33,7 @@ Before deploying the FRMA, ensure you have the following prerequisites in place:
     - click on **Re-run jobs** in popup to confirm
 5. The build process will report an error due to token exposure detection. This is expected and must be explicitly approved. Click on the link provided under the _Deploy to Static Repository_ in build process
 
-![Secret Exposure](public\img\tokenexposure.jpg)
+![Secret Exposure](public/img/tokenexposure.jpg)
 
 6. After that, re-run the deployment as described in step 4 and wait for the process to finish. 
 
@@ -53,7 +53,7 @@ Before deploying the FRMA, ensure you have the following prerequisites in place:
 7. Click on deployments and enter the one that is currently being built
 8. The build process will report an error due to token exposure detection. This is expected and must be explicitly approved. Click on the link provided under the _Deploy to Static Repository_ in build process
 
-![Secret Exposure](public\img\tokenexposure.jpg)
+![Secret Exposure](public/img/tokenexposure.jpg)
 
 9. After that, re-run the deployment and wait for the process to finish (same as step 4 under CONTENT UPDATE)
 

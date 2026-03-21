@@ -22,16 +22,4 @@ npm run dev
 
 ## Production
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-```
+Look at the [DEPLOYMENT.md](DEPLOYMENT.md) file for instructions on how to deploy the application.

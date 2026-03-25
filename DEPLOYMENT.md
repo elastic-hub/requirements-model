@@ -27,10 +27,9 @@ Before deploying the FRMA, ensure you have the following prerequisites in place:
 2. Insert the new GitHub token as a secret in the repository at the following path: [TOKEN HERE](https://github.com/elastic-hub/requirements-model/settings/secrets/actions/FILIPS_TOKEN)
 3. Update secret
 4. Re-run the deployment:
-    - click [HERE](https://github.com/elastic-hub/requirements-model/deployments)
-    - under All deployments click on _last **deployed** x days ago_
-    - in top right corner click on **Re-run jobs** and select **Re-run all jobs**
-    - click on **Re-run jobs** in popup to confirm
+    - click [HERE](https://github.com/elastic-hub/requirements-model/actions)
+    - select the "Deploy to GitHub Pages" workflow from the left sidebar
+    - click the **Run workflow** button (top right of the runs list) → select ```main``` branch → Run workflow.
 5. The build process will report an error due to token exposure detection. This is expected and must be explicitly approved. Click on the link provided under the _Deploy to Static Repository_ in build process
 
 ![Secret Exposure](public/img/tokenexposure.jpg)

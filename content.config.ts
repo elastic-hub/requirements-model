@@ -15,7 +15,7 @@ export default defineContentConfig({
       type: 'data',
       source: {
         repository: 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/meetings/tree/dev/analyzer',
-        include: '**/model-1.{2.0.1,3}*.json',
+        include: '**/model-*.json',
         authToken: process.env.GITHUB_TOKEN,
       },
       schema: z.object({}), // Allow any JSON object structure

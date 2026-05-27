@@ -85,14 +85,14 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         Object.entries(mrData.ModelRules).forEach(([ruleId, rule]) => {
             // Create reqArguments - everything from Requirement except CheckFunction
-            const reqArguments = rule.ValidationCriteria?.Requirement ?
+            const reqArguments = rule.ValidationCriteria?.Requirement ? 
                 Object.fromEntries(
                     Object.entries(rule.ValidationCriteria.Requirement).filter(([key]) => key !== 'CheckFunction')
                 ) : {};
 
             // Convert reqArguments to YAML string representation
-            const reqArgumentsString = Object.keys(reqArguments).length > 0
-                ? `<pre><code>${yaml.dump(reqArguments)}</code></pre>`
+            const reqArgumentsString = Object.keys(reqArguments).length > 0 
+                ? `<pre><code>${yaml.dump(reqArguments)}</code></pre>` 
                 : 'No Arguments';
 
             // Create conditionArguments - everything from Condition except CheckFunction
@@ -102,8 +102,8 @@ export default defineNuxtPlugin((nuxtApp) => {
                 ) : {};
 
             // Convert conditionArguments to YAML string representation
-            const conditionArgumentsString = Object.keys(conditionArguments).length > 0
-                ? `<pre><code>${yaml.dump(conditionArguments)}</code></pre>`
+            const conditionArgumentsString = Object.keys(conditionArguments).length > 0 
+                ? `<pre><code>${yaml.dump(conditionArguments)}</code></pre>` 
                 : 'No Arguments';
 
             const dependencies = rule.ValidationCriteria?.Dependencies || [];
@@ -118,14 +118,14 @@ export default defineNuxtPlugin((nuxtApp) => {
                 function: rule.Function || 'No Value',
                 reference: rule.Reference || 'No Value',
                 entityType: rule.EntityType || 'No Value',
-                entityName: rule.EntityName || 'No Value',
+                entityName : rule.EntityName || 'No Value',
                 entityId: rule.EntityId || 'No Value',
                 notes: rule.Notes || 'No Notes',
                 modelVersionIntroduced: rule.ModelVersionIntroduced || 'No Value',
                 status: rule.Status || 'No Value',
                 modelVersionRemoved: rule.ModelVersionRemoved || 'No Value',
-                applicabilityCriteria: (rule.ApplicabilityCriteria && rule.ApplicabilityCriteria.length > 0)
-                    ? rule.ApplicabilityCriteria
+                applicabilityCriteria: (rule.ApplicabilityCriteria && rule.ApplicabilityCriteria.length > 0) 
+                    ? rule.ApplicabilityCriteria 
                     : 'No Criteria',
                 type: rule.Type || 'No Value',
                 mustSatisfy: rule.ValidationCriteria?.MustSatisfy || 'No Value',
@@ -141,10 +141,10 @@ export default defineNuxtPlugin((nuxtApp) => {
                     const conditionObj = rule?.ValidationCriteria?.Condition;
                     if (conditionObj && typeof conditionObj === 'object' && Object.keys(conditionObj).length > 0) {
                         // Check if this is a simple condition object (not nested with Items)
-                        const hasSimpleProperties = Object.keys(conditionObj).some(key =>
+                        const hasSimpleProperties = Object.keys(conditionObj).some(key => 
                             key !== 'Items' && typeof conditionObj[key] !== 'object'
                         );
-
+                        
                         if (hasSimpleProperties) {
                             return Object.entries(conditionObj)
                                 .filter(([key, value]) => value !== undefined && key !== 'Items')
@@ -156,8 +156,8 @@ export default defineNuxtPlugin((nuxtApp) => {
                 })(),
                 requirement_checkFunction: rule.ValidationCriteria?.Requirement?.CheckFunction || 'No Check Function',
                 reqArguments: reqArgumentsString,
-                requirement_items: rule.ValidationCriteria?.Requirement?.Items?.length > 0
-                    ? rule.ValidationCriteria.Requirement.Items.map(item =>
+                requirement_items: rule.ValidationCriteria?.Requirement?.Items?.length > 0 
+                    ? rule.ValidationCriteria.Requirement.Items.map(item => 
                         `CheckFunction: ${item.CheckFunction}, ConformanceRuleId: ${item.ConformanceRuleId}`
                     ).join('\n')
                     : 'No Items',

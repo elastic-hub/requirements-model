@@ -272,13 +272,13 @@ const fetchData = async () => {
 
     let data;
     const keywords = useAppConfig().dynamic_table.fetch.dataUrl.includes
-
+    
     //first two statements are hardcoded for now. This needs to be changed later
     if (props.dataUrl.includes('model')) { //keywords.some(keyword => props.dataUrl.includes(keyword))
       const { data: fetchedData } = await useAsyncData('model-requirements', () => {
         return queryCollection('modelData').all()
       })
-
+     
       // Find the specific model file based on dataUrl
       if (Array.isArray(fetchedData.value)) {
         // Check if dataUrl specifies a version (e.g., model-1.2 or model-1.3)
@@ -714,7 +714,7 @@ const getItemColumValue = (item: (any), column: (any)) => {
           } else if (suffix === 'topicID') {
             return `<a href="/analysis?topic_id=${item.id}" target="_blank" title="Analyse ${item.id}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');">${iconConfig.svg}</a>`
           } else if (suffix === 'combinedID') {
-            return `<a href="/analysis?combined_id=${item.combinedID}" target="_blank" title="Analyse ${item.combinedID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');" class="cursor-pointer mr-2 !dark:text-golden !hover:text-blue-100">${iconConfig.svg}</a>`
+            return `<a href="/analysis?combined_id=${item.combinedID}" target="_blank" title="Analyse ${item.combinedID}" onclick="sessionStorage.setItem('analysisDataUrl', '${props.dataUrl.toString()}');" class="cursor-pointer mr-2 !dark:text-golden !hover:text-blue-100">${iconConfig.svg}</a>` 
           } else {
             // Default ai behavior if no suffix
             return iconConfig.svg
@@ -1242,7 +1242,7 @@ onMounted(() => {
   document.addEventListener('openMermaidModal', handleOpenMermaidModal as EventListener)
   document.addEventListener('openBuddyMentor', handleOpenBuddyMentor as EventListener)
   document.addEventListener('buddyMentorAndAnalysis', handleBuddyMentorAndAnalysis as EventListener)
-
+  
   updateData()
 })
 
@@ -1252,7 +1252,7 @@ onUnmounted(() => {
   document.removeEventListener('openMermaidModal', handleOpenMermaidModal as EventListener)
   document.removeEventListener('openBuddyMentor', handleOpenBuddyMentor as EventListener)
   document.removeEventListener('buddyMentorAndAnalysis', handleBuddyMentorAndAnalysis as EventListener)
-
+  
   if (typewriterInterval) {
     clearInterval(typewriterInterval)
   }

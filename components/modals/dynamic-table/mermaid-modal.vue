@@ -24,7 +24,9 @@
                 </div>
             </div>
             <div class="overflow-auto">
-                <div ref="mermaidContainer" class="mermaid text-sm leading-tight"></div>
+                <div ref="mermaidContainer">
+                    <AppMermaidDiagram :code="mermaidCode" />
+                </div>
             </div>
         </UCard>
     </UModal>
@@ -100,46 +102,6 @@ const mermaidCode = computed(() => {
 });
 
 const mermaidContainer = ref<HTMLElement | null>(null)
-const { $mermaid } = useNuxtApp()
-
-const renderMermaid = async () => {
-    if (!mermaidContainer.value) return
-
-    try {
-        // Clear the container first
-        mermaidContainer.value.innerHTML = ''
-
-        // Initialize mermaid with proper settings
-        await $mermaid.initialize({ 
-            startOnLoad: false,
-            theme: 'default',
-            securityLevel: 'loose'
-        })
-
-        // Generate unique ID for this diagram
-        const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`
-
-        // Render the mermaid diagram
-        const { svg } = await $mermaid.render(id, mermaidCode.value)
-
-        // Insert the SVG into the container
-        mermaidContainer.value.innerHTML = svg
-    } catch (err) {
-        console.error('Mermaid render error:', err)
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-        if (mermaidContainer.value) {
-            mermaidContainer.value.innerHTML = `<p class="text-red-500">Error rendering diagram: ${errorMessage}</p>`
-        }
-    }
-}
-
-onMounted(async () => {
-    await nextTick()
-    renderMermaid()
-})
-
-// Watch for changes in mermaidCode and re-render
-watch(mermaidCode, renderMermaid)
 
 const downloadAs = (format: 'svg' | 'png') => {
     const svgEl = mermaidContainer.value?.querySelector('svg')
